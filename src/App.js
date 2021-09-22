@@ -1,5 +1,6 @@
 import "./App.css";
 import { useState } from "react";
+import html2canvas from "html2canvas";
 
 function App() {
   const [linea1, setLinea1] = useState("");
@@ -13,12 +14,28 @@ function App() {
     setLinea2(evento.target.value);
   };
   const onChangeImagen = function (evento) {
+    console.log(evento);
     setImagen(evento.target.value);
+  };
+  const onClickExportar = function (evento) {
+    html2canvas(document.querySelector("#meme")).then((canvas) => {
+      let img = canvas.toDataURL("image/png");
+
+      let link = document.createElement("a");
+      link.download = "meme.png";
+      link.href = img;
+      link.click();
+    });
   };
 
   return (
     <div className="App">
+      <h1>MEMARDOS 😄</h1>
+      <p>
+        *Seleccione una de las imagenes y empieza a crear tu propios memes!!!
+      </p>
       <select onChange={onChangeImagen}>
+        <option value="default">Seleccione Imagen</option>
         <option value="fire">Casa en llamas</option>
         <option value="futurama">Futurama</option>
         <option value="history">History</option>
@@ -26,22 +43,25 @@ function App() {
         <option value="philosoraptor">Philosoraptor</option>
         <option value="smart">Smart Guy</option>
       </select>
-      <br />
-      <input type="text" placeholder="Linea 1" onChange={onChangeLinea1} />
-      <br />
-      <input type="text" placeholder="Linea 2" onChange={onChangeLinea2} />
-      <br />
-      <button>Exportar</button>
-      <div>
+      <div className="generator" id="meme">
         <span>{linea1}</span>
-        <br />
         <span>{linea2}</span>
-        <img src={"/assets/images/" + imagen + ".jpg"} alt="fire" />
+        <img
+          src={"/assets/images/" + imagen + ".jpg"}
+          alt="Aún no has seleccionado una imagen"
+        />
       </div>
-      {/* Select Picker de memes */}
-      {/* Input text - Primer linea */}
-      {/* Input text - Segunda linea */}
-      {/* Boton exportar */}
+      <input
+        type="text"
+        placeholder="Introduzca aquí su frase superior"
+        onChange={onChangeLinea1}
+      />
+      <input
+        type="text"
+        placeholder="Introduzca aquí su frase inferior"
+        onChange={onChangeLinea2}
+      />
+      <button onClick={onClickExportar}>Exportar</button>
     </div>
   );
 }
